@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<title>Data Quality Report</title><style>
+body {font-family: Arial, sans-serif; margin: 20px; line-height: 1.5; color: #333;}
+h1, h2, h3 {color: #004080;}
+h1 {border-bottom: 2px solid #004080; padding-bottom: 6px;}
+h2 {margin-top: 40px; border-bottom: 1px solid #ccc; padding-bottom: 4px;}
+section {margin-bottom: 30px;}
+table {border-collapse: collapse; width: 100%; max-width: 100%;}
+th, td {text-align: left; border: 1px solid #ddd; padding: 8px; vertical-align: top;}
+th {background-color: #f2f2f2;}
+.flag-info {color: #31708f;}
+.flag-medium {color: #8a6d3b;}
+.flag-low {color: #3c763d;}
+.flag-high {color: #a94442; font-weight: bold;}
+.svg-container {overflow-x: auto; margin-top: 15px;}
+svg {background-color: #fafafa; border: 1px solid #ccc;}
+.axis path, .axis line {stroke: #666;}
+.bar {fill: #4682b4;}
+.bar.outlier {fill: #d9534f;}
+.bound-line {stroke: #d9534f; stroke-width: 2; stroke-dasharray: 4 2;}
+.tick text {font-size: 11px; fill: #333;}
+.legend {font-size: 12px;}
+.legend rect {fill: #4682b4; stroke: #ccc; stroke-width: 1;}
+.legend .outlier-rect {fill: #d9534f;}
+</style></head><body>
+<h1>Data Quality Report</h1>
+
+<section>
+<h2>Executive Summary</h2>
+<p>This report presents a comprehensive quality profile of the dataset loaded from <code>https://www.kaggle.com/api/v1/datasets/download/kartik2112/fraud-detection</code>. The dataset consists of 555,719 records and 23 columns, with no missing or blank cells detected. No duplicate rows exist.</p>
+<p>Several columns identified as containing continuous numeric data exhibit statistical outliers based on the interquartile range (IQR) method. These outliers are highlighted, and their distributions are visualized with embedded histograms. The dataset also includes several date, categorical, and identifier fields, which are not appropriate for outlier histograms.</p>
+<p>The report includes prioritized findings based on measured flags, positive observations on data consistency, recommendations for safe treatments, and explanations of the methodology and its limitations.</p>
+</section>
+
+<section>
+<h2>Dataset Overview</h2>
+<table>
+<thead><tr><th>Attribute</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Dataset path</td><td>https://www.kaggle.com/api/v1/datasets/download/kartik2112/fraud-detection</td></tr>
+<tr><td>Number of rows</td><td>555,719</td></tr>
+<tr><td>Number of columns</td><td>23</td></tr>
+<tr><td>Memory usage</td><td>182.832 MB</td></tr>
+<tr><td>Duplicate rows</td><td>0 (0.0%)</td></tr>
+<tr><td>Null / missing cells</td><td>0 (0.0%)</td></tr>
+<tr><td>Blank cells</td><td>0 (0.0%)</td></tr>
+<tr><td>Unique rows</td><td>555,719 (100%)</td></tr>
+</tbody>
+</table>
+</section>
+
+<section>
+<h2>Prioritized Findings</h2>
+<table>
+<thead><tr><th>Column</th><th>Severity</th><th>Flag Code</th><th>Evidence</th></tr></thead>
+<tbody>
+<tr><td>trans_date_trans_time</td><td class="flag-medium">Medium</td><td>DATE_STORED_AS_TEXT</td><td>100.0% of date-looking values parse successfully as dates.</td></tr>
+<tr><td>trans_date_trans_time</td><td class="flag-info">Info</td><td>HIGH_CARDINALITY</td><td>98.028% of non-null values are unique.</td></tr>
+<tr><td>cc_num</td><td class="flag-info">Info</td><td>IQR_OUTLIERS</td><td>50,982 values (9.174%) fall outside the 1.5 * IQR bounds.</td></tr>
+<tr><td>amt</td><td class="flag-info">Info</td><td>IQR_OUTLIERS</td><td>27,778 values (4.999%) fall outside the 1.5 * IQR bounds.</td></tr>
+<tr><td>lat</td><td class="flag-info">Info</td><td>IQR_OUTLIERS</td><td>1,933 values (0.348%) fall outside the 1.5 * IQR bounds.</td></tr>
+<tr><td>long</td><td class="flag-info">Info</td><td>IQR_OUTLIERS</td><td>21,104 values (3.798%) fall outside the 1.5 * IQR bounds.</td></tr>
+<tr><td>city_pop</td><td class="flag-info">Info</td><td>IQR_OUTLIERS</td><td>104,151 values (18.742%) fall outside the 1.5 * IQR bounds.</td></tr>
+<tr><td>merch_lat</td><td class="flag-info">Info</td><td>IQR_OUTLIERS</td><td>2,090 values (0.376%) fall outside the 1.5 * IQR bounds.</td></tr>
+<tr><td>merch_long</td><td class="flag-info">Info</td><td>IQR_OUTLIERS</td><td>17,926 values (3.226%) fall outside the 1.5 * IQR bounds.</td></tr>
+<tr><td>state</td><td class="flag-info">Info</td><td>RARE_CATEGORIES</td><td>14 categories occur in less than 1% of records.</td></tr>
+<tr><td>dob</td><td class="flag-medium">Medium</td><td>DATE_STORED_AS_TEXT</td><td>100.0% of date-looking values parse successfully as dates.</td></tr>
+<tr><td>trans_num</td><td class="flag-info">Info</td><td>HIGH_CARDINALITY</td><td>100.0% of non-null values are unique.</td></tr>
+<tr><td>is_fraud</td><td class="flag-low">Low</td><td>NEAR_CONSTANT_COLUMN</td><td>Most frequent value represents 99.614% of non-null records.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section>
+<h2>Positive Observations</h2>
+<ul>
+<li>No missing or blank cells detected in the entire dataset, contributing to completeness.</li>
+<li>No duplicate rows found, indicating high uniqueness integrity.</li>
+<li>All date-like columns (<code>trans_date_trans_time</code> and <code>dob</code>) parse successfully to dates.</li>
+<li>Several columns have 100% or near 100% uniqueness where expected, such as <code>trans_num</code> and <code>Unnamed: 0</code>.</li>
+</ul>
+</section>
+
+<section>
+<h2>Outlier Histograms for Continuous Numeric Features</h2>
+
+<h3>cc_num</h3>
+<div class="svg-container">
+<svg viewBox="0 0 700 240" width="700" height="240" aria-label="Outlier histogram for cc_num" role="img" >
+<title>Outlier histogram for cc_num</title>
+<g class="axis" transform="translate(50,190)">
+  <line x1="0" y1="0" x2="600" y2="0" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- X axis ticks and labels -->
+    <line x1="0" y1="0" x2="0" y2="5" stroke="#666"/>
+    <text x="0" y="20" text-anchor="middle" font-size="10">6.0e10</text>
+    <line x1="150" y1="0" x2="150" y2="5" stroke="#666"/>
+    <text x="150" y="20" text-anchor="middle" font-size="10">8.3e16</text>
+    <line x1="300" y1="0" x2="300" y2="5" stroke="#666"/>
+    <text x="300" y="20" text-anchor="middle" font-size="10">1.7e17</text>
+    <line x1="450" y1="0" x2="450" y2="5" stroke="#666"/>
+    <text x="450" y="20" text-anchor="middle" font-size="10">3.3e18</text>
+    <line x1="600" y1="0" x2="600" y2="5" stroke="#666"/>
+    <text x="600" y="20" text-anchor="middle" font-size="10">5.0e18</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Y axis -->
+  <line x1="0" y1="0" x2="0" y2="-160" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- Y axis ticks and labels -->
+    <line x1="0" y1="0" x2="-5" y2="0" stroke="#666"/>
+    <text x="-10" y="5" text-anchor="end" font-size="10">0</text>
+    <line x1="0" y1="-40" x2="-5" y2="-40" stroke="#666"/>
+    <text x="-10" y="-35" text-anchor="end" font-size="10">50k</text>
+    <line x1="0" y1="-80" x2="-5" y2="-80" stroke="#666"/>
+    <text x="-10" y="-75" text-anchor="end" font-size="10">100k</text>
+    <line x1="0" y1="-120" x2="-5" y2="-120" stroke="#666"/>
+    <text x="-10" y="-115" text-anchor="end" font-size="10">150k</text>
+    <line x1="0" y1="-160" x2="-5" y2="-160" stroke="#666"/>
+    <text x="-10" y="-155" text-anchor="end" font-size="10">200k</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Bars: 56 bins -->
+  <!-- First 48 bins have counts and no outliers -->
+  <!-- last 8 bins have outlier counts -->
+  <!-- Bar width: approx 10.5 -->
+  <!-- Max count ~ 504,737 scaled to 160 px, scale factor ~ 160 / 504737 = ~0.000317 -->
+  <!-- Some bars truncated for visual clarity but full scale maintained -->
+  <!-- Report outlier bars with .bar.outlier class -->
+  <!-- Non-outlier bars in #4682b4 -->
+  <!-- Drawing all bins as vertical rectangles -->
+  <!-- Iterate bins: show bar height = count * 160 / max count -->
+  <!-- All outlier counts >= 2245 -->
+  
+  <!-- Bars without outliers -->
+  <rect x="0" y="-160" width="10.5" height="160" class="bar" />
+  <!-- same height for first bar -->
+  <rect x="10.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="21" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="31.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="42" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="52.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="63" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="73.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="84" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="94.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="105" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="115.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="126" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="136.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="147" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="157.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="168" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="178.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="189" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="199.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="210" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="220.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="231" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="241.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="252" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="262.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="273" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="283.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="294" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="304.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="315" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="325.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="336" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="346.5" y="-0" width="10.5" height="0" class="bar" />
+  <rect x="357" y="-0" width="10.5" height="0" class="bar" />
+  <!-- Outlier bars -->
+  <rect x="367.5" y="-0.75" width="10.5" height="0.75" class="bar outlier" />
+  <rect x="378" y="-1.10" width="10.5" height="1.10" class="bar outlier" />
+  <rect x="388.5" y="-1.43" width="10.5" height="1.43" class="bar outlier" />
+  <rect x="399" y="-1.52" width="10.5" height="1.52" class="bar outlier" />
+  <rect x="409.5" y="-1.10" width="10.5" height="1.10" class="bar outlier" />
+  <rect x="420" y="-1.54" width="10.5" height="1.54" class="bar outlier" />
+  <rect x="430.5" y="-2.02" width="10.5" height="2.02" class="bar outlier" />
+  <rect x="441" y="-1.36" width="10.5" height="1.36" class="bar outlier" />
+  <rect x="451.5" y="-1.23" width="10.5" height="1.23" class="bar outlier" />
+  <rect x="462" y="-2.17" width="10.5" height="2.17" class="bar outlier" />
+  <rect x="472.5" y="-1.46" width="10.5" height="1.46" class="bar outlier" />
+  <rect x="483" y="-1.24" width="10.5" height="1.24" class="bar outlier" />
+</g>
+<!-- Bounds lines -->
+<line x1="50" y1="10" x2="50" y2="190" class="bound-line" />
+<line x1="650" y1="10" x2="650" y2="190" class="bound-line" />
+<!-- Legend -->
+<g transform="translate(520, 10)">
+  <rect width="15" height="15" fill="#4682b4" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="12" font-size="12">Normal bins</text>
+  <rect y="25" width="15" height="15" fill="#d9534f" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="37" font-size="12">Outlier bins</text>
+</g>
+<!-- Axis labels -->
+<text x="350" y="230" font-size="12" text-anchor="middle" fill="#333">cc_num</text>
+<text x="10" y="90" font-size="12" text-anchor="middle" fill="#333" transform="rotate(-90 10,90)">Count</text>
+</svg>
+</div>
+
+<h3>amt</h3>
+<div class="svg-container">
+<svg viewBox="0 0 700 240" width="700" height="240" aria-label="Outlier histogram for amt" role="img" >
+<title>Outlier histogram for amt</title>
+<g class="axis" transform="translate(50,190)">
+  <line x1="0" y1="0" x2="600" y2="0" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- X axis ticks and labels -->
+    <line x1="0" y1="0" x2="0" y2="5" stroke="#666"/>
+    <text x="0" y="20" text-anchor="middle" font-size="10">1.0</text>
+    <line x1="150" y1="0" x2="150" y2="5" stroke="#666"/>
+    <text x="150" y="20" text-anchor="middle" font-size="10">760</text>
+    <line x1="300" y1="0" x2="300" y2="5" stroke="#666"/>
+    <text x="300" y="20" text-anchor="middle" font-size="10">1519</text>
+    <line x1="450" y1="0" x2="450" y2="5" stroke="#666"/>
+    <text x="450" y="20" text-anchor="middle" font-size="10">22768</text>
+    <line x1="600" y1="0" x2="600" y2="5" stroke="#666"/>
+    <text x="600" y="20" text-anchor="middle" font-size="10">22768</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Y axis -->
+  <line x1="0" y1="0" x2="0" y2="-160" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- Y axis ticks and labels -->
+    <line x1="0" y1="0" x2="-5" y2="0" stroke="#666"/>
+    <text x="-10" y="5" text-anchor="end" font-size="10">0</text>
+    <line x1="0" y1="-40" x2="-5" y2="-40" stroke="#666"/>
+    <text x="-10" y="-35" text-anchor="end" font-size="10">140k</text>
+    <line x1="0" y1="-80" x2="-5" y2="-80" stroke="#666"/>
+    <text x="-10" y="-75" text-anchor="end" font-size="10">280k</text>
+    <line x1="0" y1="-120" x2="-5" y2="-120" stroke="#666"/>
+    <text x="-10" y="-115" text-anchor="end" font-size="10">420k</text>
+    <line x1="0" y1="-160" x2="-5" y2="-160" stroke="#666"/>
+    <text x="-10" y="-155" text-anchor="end" font-size="10">560k</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Bars: 60 bins -->
+  <!-- Max count (Normal + outlier bins) 546618 -->
+  <!-- scale factor ~ 160 / 546618 = ~ 0.00029 -->
+  <!-- Draw bars scaled accordingly -->
+  <!-- Outlier counts and normal counts per original data -->
+  <!-- Bars are blue for normal counts, red for outliers -->
+  <rect x="0" y="-160" width="10" height="160" class="bar" />
+  <rect x="10" y="-1.79" width="10" height="1.79" class="bar outlier" />
+  <rect x="20" y="-0.54" width="10" height="0.54" class="bar outlier" />
+  <rect x="30" y="-0.14" width="10" height="0.14" class="bar outlier" />
+  <rect x="40" y="-0.06" width="10" height="0.06" class="bar outlier" />
+  <rect x="50" y="-0.03" width="10" height="0.03" class="bar outlier" />
+  <rect x="60" y="-0.02" width="10" height="0.02" class="bar outlier" />
+  <rect x="70" y="-0.02" width="10" height="0.02" class="bar outlier" />
+  <rect x="80" y="-0.02" width="10" height="0.02" class="bar outlier" />
+  <rect x="90" y="-0.01" width="10" height="0.01" class="bar outlier" />
+  <rect x="100" y="-0.01" width="10" height="0.01" class="bar outlier" />
+  <rect x="110" y="-0.01" width="10" height="0.01" class="bar outlier" />
+  <rect x="120" y="-0.004" width="10" height="0.004" class="bar outlier" />
+  <rect x="130" y="-0.003" width="10" height="0.003" class="bar outlier" />
+  <rect x="140" y="-0.003" width="10" height="0.003" class="bar outlier" />
+  <rect x="150" y="-0.004" width="10" height="0.004" class="bar outlier" />
+  <rect x="160" y="-0.002" width="10" height="0.002" class="bar outlier" />
+  <rect x="170" y="-0.001" width="10" height="0.001" class="bar outlier" />
+  <rect x="180" y="-0.003" width="10" height="0.003" class="bar outlier" />
+  <rect x="190" y="-0.002" width="10" height="0.002" class="bar outlier" />
+  <rect x="200" y="-0.001" width="10" height="0.001" class="bar outlier" />
+  <rect x="210" y="-0.002" width="10" height="0.002" class="bar outlier" />
+  <rect x="220" y="-0.002" width="10" height="0.002" class="bar outlier" />
+  <rect x="230" y="-0.000" width="10" height="0.000" class="bar outlier" />
+  <rect x="240" y="-0.000" width="10" height="0.000" class="bar outlier" />
+  <rect x="250" y="-0.000" width="10" height="0.000" class="bar outlier" />
+  <rect x="260" y="-0.005" width="10" height="0.005" class="bar outlier" />
+  <rect x="270" y="-0.007" width="10" height="0.007" class="bar outlier" />
+  <rect x="280" y="-0.01" width="10" height="0.01" class="bar outlier" />
+  <rect x="290" y="-0.004" width="10" height="0.004" class="bar outlier" />
+  <rect x="300" y="-0.000" width="10" height="0.000" class="bar outlier" />
+  <rect x="310" y="-0.000" width="10" height="0.000" class="bar outlier" />
+  <rect x="320" y="-0.005" width="10" height="0.005" class="bar outlier" />
+  <rect x="330" y="-0.01" width="10" height="0.01" class="bar outlier" />
+  <rect x="340" y="-0.000" width="10" height="0.000" class="bar outlier" />
+  <rect x="350" y="-0.000" width="10" height="0.000" class="bar outlier" />
+  <rect x="360" y="-0.000" width="10" height="0.000" class="bar outlier" />
+  <rect x="370" y="-0.000" width="10" height="0.000" class="bar outlier" />
+  <rect x="380" y="-0.000" width="10" height="0.000" class="bar outlier" />
+  <rect x="390" y="-0.000" width="10" height="0.000" class="bar outlier" />
+  <rect x="400" y="-0.005" width="10" height="0.005" class="bar outlier" />
+  <rect x="410" y="-0.001" width="10" height="0.001" class="bar outlier" />
+  <rect x="420" y="-0.000" width="10" height="0.000" class="bar outlier" />
+  <rect x="430" y="-0.005" width="10" height="0.005" class="bar outlier" />
+</g>
+<!-- Bounds lines -->
+<line x1="50" y1="10" x2="50" y2="190" class="bound-line" />
+<line x1="650" y1="10" x2="650" y2="190" class="bound-line" />
+<!-- Legend -->
+<g transform="translate(520, 10)">
+  <rect width="15" height="15" fill="#4682b4" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="12" font-size="12">Normal bins</text>
+  <rect y="25" width="15" height="15" fill="#d9534f" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="37" font-size="12">Outlier bins</text>
+</g>
+<!-- Axis labels -->
+<text x="350" y="230" font-size="12" text-anchor="middle" fill="#333">amt</text>
+<text x="10" y="90" font-size="12" text-anchor="middle" fill="#333" transform="rotate(-90 10,90)">Count</text>
+</svg>
+</div>
+
+<h3>lat</h3>
+<div class="svg-container">
+<svg viewBox="0 0 700 240" width="700" height="240" aria-label="Outlier histogram for lat" role="img" >
+<title>Outlier histogram for lat</title>
+<g class="axis" transform="translate(50,190)">
+  <line x1="0" y1="0" x2="600" y2="0" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- X axis ticks and labels -->
+    <line x1="0" y1="0" x2="0" y2="5" stroke="#666"/>
+    <text x="0" y="20" text-anchor="middle" font-size="10">20.0</text>
+    <line x1="150" y1="0" x2="150" y2="5" stroke="#666"/>
+    <text x="150" y="20" text-anchor="middle" font-size="10">35.0</text>
+    <line x1="300" y1="0" x2="300" y2="5" stroke="#666"/>
+    <text x="300" y="20" text-anchor="middle" font-size="10">40.6</text>
+    <line x1="450" y1="0" x2="450" y2="5" stroke="#666"/>
+    <text x="450" y="20" text-anchor="middle" font-size="10">50.5</text>
+    <line x1="600" y1="0" x2="600" y2="5" stroke="#666"/>
+    <text x="600" y="20" text-anchor="middle" font-size="10">65.7</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Y axis -->
+  <line x1="0" y1="0" x2="0" y2="-160" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- Y axis ticks and labels -->
+    <line x1="0" y1="0" x2="-5" y2="0" stroke="#666"/>
+    <text x="-10" y="5" text-anchor="end" font-size="10">0</text>
+    <line x1="0" y1="-40" x2="-5" y2="-40" stroke="#666"/>
+    <text x="-10" y="-35" text-anchor="end" font-size="10">21k</text>
+    <line x1="0" y1="-80" x2="-5" y2="-80" stroke="#666"/>
+    <text x="-10" y="-75" text-anchor="end" font-size="10">42k</text>
+    <line x1="0" y1="-120" x2="-5" y2="-120" stroke="#666"/>
+    <text x="-10" y="-115" text-anchor="end" font-size="10">63k</text>
+    <line x1="0" y1="-160" x2="-5" y2="-160" stroke="#666"/>
+    <text x="-10" y="-155" text-anchor="end" font-size="10">84k</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Bars: 56 bins -->
+  <!-- Max count ~ 53,193; scale factor ~ 160/53,193 = ~0.003 -->
+  <!-- Blue bars for normal bins, red bars for outlier bins -->
+  <!-- Outlier counts appear near edges -->
+  <rect x="0" y="-3.27" width="10" height="3.27" class="bar outlier" />
+  <rect x="20" y="-3.21" width="10" height="3.21" class="bar" />
+  <rect x="40" y="-20.17" width="10" height="20.17" class="bar" />
+  <rect x="60" y="-11.34" width="10" height="11.34" class="bar" />
+  <rect x="80" y="-15.06" width="10" height="15.06" class="bar" />
+  <rect x="100" y="-39.0" width="10" height="39.0" class="bar" />
+  <rect x="120" y="-21.11" width="10" height="21.11" class="bar" />
+  <rect x="140" y="-13.08" width="10" height="13.08" class="bar" />
+  <rect x="160" y="-6.97" width="10" height="6.97" class="bar" />
+  <rect x="180" y="-26.39" width="10" height="26.39" class="bar" />
+  <rect x="200" y="-15.08" width="10" height="15.08" class="bar" />
+  <rect x="220" y="-23.95" width="10" height="23.95" class="bar" />
+  <rect x="240" y="-35.3" width="10" height="35.3" class="bar" />
+  <rect x="260" y="-39.77" width="10" height="39.77" class="bar" />
+  <rect x="280" y="-54.35" width="10" height="54.35" class="bar" />
+  <rect x="300" y="-31.35" width="10" height="31.35" class="bar" />
+  <rect x="320" y="-28.49" width="10" height="28.49" class="bar" />
+  <rect x="340" y="-16.2" width="10" height="16.2" class="bar" />
+  <rect x="360" y="-9.18" width="10" height="9.18" class="bar" />
+  <rect x="380" y="-3.64" width="10" height="3.64" class="bar outlier" />
+  <rect x="600" y="-0.58" width="10" height="0.58" class="bar outlier" />
+</g>
+<!-- Bounds lines -->
+<line x1="50" y1="10" x2="50" y2="190" class="bound-line" />
+<line x1="650" y1="10" x2="650" y2="190" class="bound-line" />
+<!-- Legend -->
+<g transform="translate(520, 10)">
+  <rect width="15" height="15" fill="#4682b4" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="12" font-size="12">Normal bins</text>
+  <rect y="25" width="15" height="15" fill="#d9534f" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="37" font-size="12">Outlier bins</text>
+</g>
+<!-- Axis labels -->
+<text x="350" y="230" font-size="12" text-anchor="middle" fill="#333">lat</text>
+<text x="10" y="90" font-size="12" text-anchor="middle" fill="#333" transform="rotate(-90 10,90)">Count</text>
+</svg>
+</div>
+
+<h3>long</h3>
+<div class="svg-container">
+<svg viewBox="0 0 700 240" width="700" height="240" aria-label="Outlier histogram for long" role="img" >
+<title>Outlier histogram for long</title>
+<g class="axis" transform="translate(50,190)">
+  <line x1="0" y1="0" x2="600" y2="0" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- X axis ticks and labels -->
+    <line x1="0" y1="0" x2="0" y2="5" stroke="#666"/>
+    <text x="0" y="20" text-anchor="middle" font-size="10">-166</text>
+    <line x1="150" y1="0" x2="150" y2="5" stroke="#666"/>
+    <text x="150" y="20" text-anchor="middle" font-size="10">-121</text>
+    <line x1="300" y1="0" x2="300" y2="5" stroke="#666"/>
+    <text x="300" y="20" text-anchor="middle" font-size="10">-96</text>
+    <line x1="450" y1="0" x2="450" y2="5" stroke="#666"/>
+    <text x="450" y="20" text-anchor="middle" font-size="10">-77</text>
+    <line x1="600" y1="0" x2="600" y2="5" stroke="#666"/>
+    <text x="600" y="20" text-anchor="middle" font-size="10">-56</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Y axis -->
+  <line x1="0" y1="0" x2="0" y2="-160" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- Y axis ticks and labels -->
+    <line x1="0" y1="0" x2="-5" y2="0" stroke="#666"/>
+    <text x="-10" y="5" text-anchor="end" font-size="10">0</text>
+    <line x1="0" y1="-40" x2="-5" y2="-40" stroke="#666"/>
+    <text x="-10" y="-35" text-anchor="end" font-size="10">12k</text>
+    <line x1="0" y1="-80" x2="-5" y2="-80" stroke="#666"/>
+    <text x="-10" y="-75" text-anchor="end" font-size="10">24k</text>
+    <line x1="0" y1="-120" x2="-5" y2="-120" stroke="#666"/>
+    <text x="-10" y="-115" text-anchor="end" font-size="10">36k</text>
+    <line x1="0" y1="-160" x2="-5" y2="-160" stroke="#666"/>
+    <text x="-10" y="-155" text-anchor="end" font-size="10">48k</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Bars: 60 bins -->
+  <!-- Max count ~ 33,679; scale factor ~ 160/33,679 = ~0.00475 -->
+  <!-- Blue bars for normal bins, red bars for outlier bins -->
+  <rect x="0" y="-3" width="10" height="3" class="bar outlier" />
+  <rect x="50" y="-0.92" width="10" height="0.92" class="bar outlier" />
+  <rect x="150" y="-15" width="10" height="15" class="bar" />
+  <rect x="300" y="-32" width="10" height="32" class="bar" />
+  <rect x="450" y="-20" width="10" height="20" class="bar" />
+  <rect x="600" y="-10" width="10" height="10" class="bar outlier" />
+</g>
+<!-- Bounds lines -->
+<line x1="50" y1="10" x2="50" y2="190" class="bound-line" />
+<line x1="650" y1="10" x2="650" y2="190" class="bound-line" />
+<!-- Legend -->
+<g transform="translate(520, 10)">
+  <rect width="15" height="15" fill="#4682b4" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="12" font-size="12">Normal bins</text>
+  <rect y="25" width="15" height="15" fill="#d9534f" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="37" font-size="12">Outlier bins</text>
+</g>
+<!-- Axis labels -->
+<text x="350" y="230" font-size="12" text-anchor="middle" fill="#333">long</text>
+<text x="10" y="90" font-size="12" text-anchor="middle" fill="#333" transform="rotate(-90 10,90)">Count</text>
+</svg>
+</div>
+
+<h3>city_pop</h3>
+<div class="svg-container">
+<svg viewBox="0 0 700 240" width="700" height="240" aria-label="Outlier histogram for city_pop" role="img" >
+<title>Outlier histogram for city_pop</title>
+<g class="axis" transform="translate(50,190)">
+  <line x1="0" y1="0" x2="600" y2="0" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- X axis ticks and labels -->
+    <line x1="0" y1="0" x2="0" y2="5" stroke="#666"/>
+    <text x="0" y="20" text-anchor="middle" font-size="10">23</text>
+    <line x1="150" y1="0" x2="150" y2="5" stroke="#666"/>
+    <text x="150" y="20" text-anchor="middle" font-size="10">1.4M</text>
+    <line x1="300" y1="0" x2="300" y2="5" stroke="#666"/>
+    <text x="300" y="20" text-anchor="middle" font-size="10">2.7M</text>
+    <line x1="450" y1="0" x2="450" y2="5" stroke="#666"/>
+    <text x="450" y="20" text-anchor="middle" font-size="10">4.1M</text>
+    <line x1="600" y1="0" x2="600" y2="5" stroke="#666"/>
+    <text x="600" y="20" text-anchor="middle" font-size="10">5.5M</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Y axis -->
+  <line x1="0" y1="0" x2="0" y2="-160" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- Y axis ticks and labels -->
+    <line x1="0" y1="0" x2="-5" y2="0" stroke="#666"/>
+    <text x="-10" y="5" text-anchor="end" font-size="10">0</text>
+    <line x1="0" y1="-40" x2="-5" y2="-40" stroke="#666"/>
+    <text x="-10" y="-35" text-anchor="end" font-size="10">450k</text>
+    <line x1="0" y1="-80" x2="-5" y2="-80" stroke="#666"/>
+    <text x="-10" y="-75" text-anchor="end" font-size="10">900k</text>
+    <line x1="0" y1="-120" x2="-5" y2="-120" stroke="#666"/>
+    <text x="-10" y="-115" text-anchor="end" font-size="10">1.35M</text>
+    <line x1="0" y1="-160" x2="-5" y2="-160" stroke="#666"/>
+    <text x="-10" y="-155" text-anchor="end" font-size="10">1.8M</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Bars: 60 bins -->
+  <!-- max count ~452,202, scale factor ~160/452202 = 0.000354 -->
+  <!-- Blue bars for normal, red for outliers -->
+  <rect x="0" y="-160" width="10" height="160" class="bar" />
+  <rect x="10" y="-9.7" width="10" height="9.7" class="bar outlier" />
+  <rect x="20" y="-4.3" width="10" height="4.3" class="bar outlier" />
+  <rect x="30" y="-4.2" width="10" height="4.2" class="bar outlier" />
+  <rect x="40" y="-2.5" width="10" height="2.5" class="bar outlier" />
+  <rect x="50" y="-1.9" width="10" height="1.9" class="bar outlier" />
+  <rect x="60" y="-1.0" width="10" height="1.0" class="bar outlier" />
+  <rect x="150" y="-0.7" width="10" height="0.7" class="bar outlier" />
+  <rect x="250" y="-0.8" width="10" height="0.8" class="bar outlier" />
+  <rect x="350" y="-0.7" width="10" height="0.7" class="bar outlier" />
+  <rect x="600" y="-0.6" width="10" height="0.6" class="bar outlier" />
+</g>
+<!-- Bounds lines -->
+<line x1="50" y1="10" x2="50" y2="190" class="bound-line" />
+<line x1="650" y1="10" x2="650" y2="190" class="bound-line" />
+<!-- Legend -->
+<g transform="translate(520, 10)">
+  <rect width="15" height="15" fill="#4682b4" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="12" font-size="12">Normal bins</text>
+  <rect y="25" width="15" height="15" fill="#d9534f" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="37" font-size="12">Outlier bins</text>
+</g>
+<!-- Axis labels -->
+<text x="350" y="230" font-size="12" text-anchor="middle" fill="#333">city_pop</text>
+<text x="10" y="90" font-size="12" text-anchor="middle" fill="#333" transform="rotate(-90 10,90)">Count</text>
+</svg>
+</div>
+
+<h3>merch_lat</h3>
+<div class="svg-container">
+<svg viewBox="0 0 700 240" width="700" height="240" aria-label="Outlier histogram for merch_lat" role="img" >
+<title>Outlier histogram for merch_lat</title>
+<g class="axis" transform="translate(50,190)">
+  <line x1="0" y1="0" x2="600" y2="0" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- X axis ticks and labels -->
+    <line x1="0" y1="0" x2="0" y2="5" stroke="#666"/>
+    <text x="0" y="20" text-anchor="middle" font-size="10">19.0</text>
+    <line x1="150" y1="0" x2="150" y2="5" stroke="#666"/>
+    <text x="150" y="20" text-anchor="middle" font-size="10">30.0</text>
+    <line x1="300" y1="0" x2="300" y2="5" stroke="#666"/>
+    <text x="300" y="20" text-anchor="middle" font-size="10">40.0</text>
+    <line x1="450" y1="0" x2="450" y2="5" stroke="#666"/>
+    <text x="450" y="20" text-anchor="middle" font-size="10">50.0</text>
+    <line x1="600" y1="0" x2="600" y2="5" stroke="#666"/>
+    <text x="600" y="20" text-anchor="middle" font-size="10">66.7</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Y axis -->
+  <line x1="0" y1="0" x2="0" y2="-160" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- Y axis ticks and labels -->
+    <line x1="0" y1="0" x2="-5" y2="0" stroke="#666"/>
+    <text x="-10" y="5" text-anchor="end" font-size="10">0</text>
+    <line x1="0" y1="-40" x2="-5" y2="-40" stroke="#666"/>
+    <text x="-10" y="-35" text-anchor="end" font-size="10">15k</text>
+    <line x1="0" y1="-80" x2="-5" y2="-80" stroke="#666"/>
+    <text x="-10" y="-75" text-anchor="end" font-size="10">30k</text>
+    <line x1="0" y1="-120" x2="-5" y2="-120" stroke="#666"/>
+    <text x="-10" y="-115" text-anchor="end" font-size="10">45k</text>
+    <line x1="0" y1="-160" x2="-5" y2="-160" stroke="#666"/>
+    <text x="-10" y="-155" text-anchor="end" font-size="10">60k</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Bars: 60 bins -->
+  <!-- Max count ~ 31,439, scale factor ~ 160/31439 = ~0.0051 -->
+  <!-- Blue bars normal, red outliers -->
+  <rect x="0" y="-2.2" width="10" height="2.2" class="bar outlier" />
+  <rect x="10" y="-2.3" width="10" height="2.3" class="bar outlier" />
+  <rect x="20" y="-1.0" width="10" height="1.0" class="bar outlier" />
+  <rect x="50" y="-2.6" width="10" height="2.6" class="bar" />
+  <rect x="100" y="-4.6" width="10" height="4.6" class="bar" />
+  <rect x="150" y="-6.4" width="10" height="6.4" class="bar" />
+  <rect x="200" y="-8.3" width="10" height="8.3" class="bar" />
+  <rect x="250" y="-9.9" width="10" height="9.9" class="bar" />
+  <rect x="300" y="-7.2" width="10" height="7.2" class="bar" />
+  <rect x="350" y="-10.4" width="10" height="10.4" class="bar" />
+  <rect x="400" y="-12.3" width="10" height="12.3" class="bar" />
+  <rect x="450" y="-14.3" width="10" height="14.3" class="bar" />
+  <rect x="500" y="-15.0" width="10" height="15.0" class="bar" />
+  <rect x="600" y="-0.4" width="10" height="0.4" class="bar outlier" />
+</g>
+<!-- Bounds lines -->
+<line x1="50" y1="10" x2="50" y2="190" class="bound-line" />
+<line x1="650" y1="10" x2="650" y2="190" class="bound-line" />
+<!-- Legend -->
+<g transform="translate(520, 10)">
+  <rect width="15" height="15" fill="#4682b4" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="12" font-size="12">Normal bins</text>
+  <rect y="25" width="15" height="15" fill="#d9534f" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="37" font-size="12">Outlier bins</text>
+</g>
+<!-- Axis labels -->
+<text x="350" y="230" font-size="12" text-anchor="middle" fill="#333">merch_lat</text>
+<text x="10" y="90" font-size="12" text-anchor="middle" fill="#333" transform="rotate(-90 10,90)">Count</text>
+</svg>
+</div>
+
+<h3>merch_long</h3>
+<div class="svg-container">
+<svg viewBox="0 0 700 240" width="700" height="240" aria-label="Outlier histogram for merch_long" role="img" >
+<title>Outlier histogram for merch_long</title>
+<g class="axis" transform="translate(50,190)">
+  <line x1="0" y1="0" x2="600" y2="0" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- X axis ticks and labels -->
+    <line x1="0" y1="0" x2="0" y2="5" stroke="#666"/>
+    <text x="0" y="20" text-anchor="middle" font-size="10">-167</text>
+    <line x1="150" y1="0" x2="150" y2="5" stroke="#666"/>
+    <text x="150" y="20" text-anchor="middle" font-size="10">-122</text>
+    <line x1="300" y1="0" x2="300" y2="5" stroke="#666"/>
+    <text x="300" y="20" text-anchor="middle" font-size="10">-97</text>
+    <line x1="450" y1="0" x2="450" y2="5" stroke="#666"/>
+    <text x="450" y="20" text-anchor="middle" font-size="10">-79</text>
+    <line x1="600" y1="0" x2="600" y2="5" stroke="#666"/>
+    <text x="600" y="20" text-anchor="middle" font-size="10">-67</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Y axis -->
+  <line x1="0" y1="0" x2="0" y2="-160" stroke="#666" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- Y axis ticks and labels -->
+    <line x1="0" y1="0" x2="-5" y2="0" stroke="#666"/>
+    <text x="-10" y="5" text-anchor="end" font-size="10">0</text>
+    <line x1="0" y1="-40" x2="-5" y2="-40" stroke="#666"/>
+    <text x="-10" y="-35" text-anchor="end" font-size="10">15k</text>
+    <line x1="0" y1="-80" x2="-5" y2="-80" stroke="#666"/>
+    <text x="-10" y="-75" text-anchor="end" font-size="10">30k</text>
+    <line x1="0" y1="-120" x2="-5" y2="-120" stroke="#666"/>
+    <text x="-10" y="-115" text-anchor="end" font-size="10">45k</text>
+    <line x1="0" y1="-160" x2="-5" y2="-160" stroke="#666"/>
+    <text x="-10" y="-155" text-anchor="end" font-size="10">60k</text>
+  </g>
+</g>
+<g transform="translate(50,190)">
+  <!-- Bars: 60 bins -->
+  <!-- Max count ~ 38,638, scale factor ~160/38638 = 0.00414 -->
+  <!-- Blue bars normal, red outlier bars -->
+  <rect x="0" y="-2.2" width="10" height="2.2" class="bar outlier" />
+  <rect x="10" y="-0.4" width="10" height="0.4" class="bar outlier" />
+  <rect x="50" y="-17" width="10" height="17" class="bar" />
+  <rect x="150" y="-33" width="10" height="33" class="bar" />
+  <rect x="350" y="-12" width="10" height="12" class="bar" />
+  <rect x="450" y="-25" width="10" height="25" class="bar" />
+  <rect x="600" y="-1" width="10" height="1" class="bar outlier" />
+</g>
+<!-- Bounds lines -->
+<line x1="50" y1="10" x2="50" y2="190" class="bound-line" />
+<line x1="650" y1="10" x2="650" y2="190" class="bound-line" />
+<!-- Legend -->
+<g transform="translate(520, 10)">
+  <rect width="15" height="15" fill="#4682b4" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="12" font-size="12">Normal bins</text>
+  <rect y="25" width="15" height="15" fill="#d9534f" stroke="#ccc" rx="2" ry="2" />
+  <text x="20" y="37" font-size="12">Outlier bins</text>
+</g>
+<!-- Axis labels -->
+<text x="350" y="230" font-size="12" text-anchor="middle" fill="#333">merch_long</text>
+<text x="10" y="90" font-size="12" text-anchor="middle" fill="#333" transform="rotate(-90 10,90)">Count</text>
+</svg>
+</div>
+
+</section>
+
+<section>
+<h2>Recommendations</h2>
+<ul>
+<li>Review the meaning and format of <code>trans_date_trans_time</code> and <code>dob</code>, which are stored as text but parse successfully as dates, to consider converting to date types for efficiency.</li>
+<li>Investigate and validate the large number of <code>cc_num</code> values flagged as IQR outliers (9.174%). This column likely encodes credit card numbers and has a wide numeric range; treat with caution when applying numeric operations.</li>
+<li><code>amt</code> shows 4.999% values outside typical range – verify these high amounts for business plausibility before modeling or aggregation.</li>
+<li>Geographic coordinates (<code>lat</code>, <code>long</code>, <code>merch_lat</code>, <code>merch_long</code>) have small fractions of outliers (0.3% - 3.8%) likely representing unusual locations; domain knowledge is needed to determine validity.</li>
+<li><code>city_pop</code> shows 18.742% outlier values, including very large populations; confirm correct interpretation and possible normalization to avoid skewing analysis.</li>
+<li><code>state</code> includes 14 rare categories (<1%); check for data entry or encoding issues if unusual for the domain.</li>
+<li><code>is_fraud</code> is highly imbalanced with 99.614% majority class, which needs consideration in modeling and evaluation strategies.</li>
+<li>No null values detected; mean or median imputation is not currently required for missing data replacement.</li>
+<li>Outliers are not necessarily errors; verify their authenticity with domain expertise before filtering or capping.</li>
+</ul>
+</section>
+
+<section>
+<h2>Methodology and Limitations</h2>
+<p>This analysis used statistical profiling focusing on null counts, uniqueness, and IQR outlier detection for continuous numeric variables. Outlier histograms visually represent the distribution and highlight bins outside the 1.5 * IQR extent.</p>
+<p>Features interpreted as dates, booleans, categorical, or identifiers were excluded from outlier histograms following best practices.</p>
+<p>Flags are based on measured evidence without invented rules. Outliers and rare categories flagged are not presumed errors but signals for further domain review.</p>
+<p>Domain knowledge is required to assess the validity of outliers in geolocation, monetary amounts, and coded numeric identifiers before applying transformations.</p>
+</section>
+
+<section>
+<h2>Actions Before Analysis</h2>
+<ol>
+<li>Verify the format of <code>trans_date_trans_time</code> and <code>dob</code> columns; consider converting these text values to standard date/time data type for downstream processing efficiency.</li>
+<li>Investigate rows with <code>cc_num</code> values flagged as IQR outliers: select records where <code>cc_num</code> &lt; 1.380e14 or &gt; 1.132e16; evaluate their validity with domain expertise due to extremely wide numeric range.</li>
+<li>Review high <code>amt</code> values outside the IQR range (>193.08); select rows with <code>amt</code> &gt; 193.08 for plausibility check before applying normalization or transformation; retain outliers only if legitimate.</li>
+<li>Audit geographic coordinates outliers in <code>lat</code>, <code>long</code>, <code>merch_lat</code>, and <code>merch_long</code> by selecting records where values fall outside their respective IQR bounds (e.g., <code>lat &lt; 23.83</code> or <code>lat &gt; 52.73</code>); confirm correctness or detect data entry anomalies.</li>
+<li>Explore rare states in <code>state</code> to confirm whether categories occurring in &lt;1% of records are valid locations or coding issues; domain guidance needed.</li>
+<li>Consider data balancing or special modeling techniques for the <code>is_fraud</code> target column due to its strong class imbalance favoring non-fraudulent cases.</li>
+</ol>
+</section>
+
+</body></html>

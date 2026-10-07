@@ -15,6 +15,7 @@ from crewai import (
                        TaskOutput,
                    )
 from tools.data_quality_profiler import DatasetQualityProfilerTool
+from tools.histograms import prepare_histograms, insert_histograms
 #-----------------------------------------------------------------------------
 
 
@@ -56,17 +57,15 @@ def build_agent() -> Agent:
                              data-quality risks, distinguish confirmed problems from
                              statistical anomalies, and recommend safe and technically
                              appropriate treatments without inventing facts.
-                             Include measured outlier histograms only for continuous
-                             numeric features for which an IQR-based anomaly analysis
-                             is semantically meaningful.
+                             Include measured histograms only for continuous
+                             numeric features whose identified outliers presence.
                          """,
                   backstory = """
                                   You specialize in data quality, exploratory analysis and reliable analytical pipelines.
                                   Never estimate statistics that can be obtained from a tool.
                                   Distinguish evidence from interpretation.
                                   Outliers are not automatically errors.
-                                  Before discussing or charting IQR outliers, infer the likely meaning of each feature from its name and profile. Create an outlier histogram only for continuous numeric measurements.
-                                  Never create outlier histograms for boolean or binary features, even when encoded numerically.
+                                  Never create histograms for boolean or binary features, even when encoded numerically.
                                   Try to identify the feature meaning by their names and just generate the histograms if it makes sense.
                                   When a feature's meaning is ambiguous, conservatively omit it from IQR outlier findings and charts rather than guessing.
                                   Missing values are not automatically candidates for imputation.
@@ -195,6 +194,22 @@ def main() -> None:
                                    )
     except ValueError as exc:
         parser.exit(2, f"Dataset error: {exc}\n")
+    columns, histogram_charts = prepare_histograms(profile.columns_profile)
+
+    def validate_generated_report(result: TaskOutput) -> tuple[bool, Any]:
+        if re.search(r"<svg\b", result.raw, flags=re.IGNORECASE):
+            return False, "Use the supplied histogram_token instead of writing SVG yourself."
+        valid, html = validate_html_report(result)
+        if not valid:
+            return valid, html
+        if re.search(r"<h2\b[^>]*>\s*Outlier Histograms\s*</h2>", html, re.IGNORECASE):
+            if not any(token in html for token in histogram_charts):
+                return False, "The Outlier Histograms section must contain the exact supplied histogram_token for each eligible column."
+        try:
+            return True, insert_histograms(html, histogram_charts)
+        except ValueError as exc:
+            return False, str(exc)
+
     audit_task = Task(
                        description = (
                                        """
@@ -214,19 +229,28 @@ def main() -> None:
                                            - Do not modify the dataset. 
                                            - Do not produce separate execution plans or files.
                                            - Do not use code fences or return a plan instead of the report.
-                                           - Create Outlier Histograms for each feature where this behavior is identified.
-                                           - For each eligible feature, a histogram is mandatory; do not replace it with tables, 
-                                             prose or recommendations to plot later.
-                                           - For each feature that demmands an histogram, adapt the x-axis and y-axis value's scale to improve a better visualization.
+                                           HISTOGRAM ELIGIBILITY AND DATA:
+                                           - Include Outlier Histograms only for semantically eligible continuous numeric
+                                             measurements with iqr_outliers.count > 0 and a supplied histogram_token.
+                                           - For each eligible feature, a histogram is mandatory; do not replace it with tables,
+                                             prose or recommendations to plot later. Use the exact measured column name.
                                            - Never create an outlier chart or label values as outliers for boolean/binary features, 
                                              including 0/1 encodings, or for identifiers, codes, categorical encodings, ranks, 
                                              dates/timestamps, or geographic coordinates.
                                            - Do not create the Outlier Histograms section when no eligible feature exists.
-                                           - Render each histogram as an embedded inline SVG using only its measured outlier_histogram.edges, 
-                                             counts and outlier_counts.
-                                           - Each SVG must be static and self-contained: use a viewBox tall enough for all content,
-                                             reserve explicit left/right/top/bottom margins, and position the axes, bars, bound lines,
-                                             tick marks, tick labels, axis labels and legend inside that viewBox.
+                                           - Charts are rendered deterministically by Python after your response.
+                                             Do not write SVG, chart coordinates, bars, chart captions or chart placeholders
+                                             of your own. Do not use JavaScript or external images for charts.
+                                           - Each candidate column includes an exact histogram_token in the profile.
+                                             For every semantically eligible measurement, copy its histogram_token once
+                                             on its own line inside the Outlier Histograms section, before Actions Before Analysis.
+                                             The token is replaced by a complete measured stacked histogram with axes,
+                                             a centered legend, and a caption containing counts, percentage and IQR bounds.
+                                           - A column without histogram_token must not have a histogram. A token only
+                                             establishes that chart data exists; still exclude ambiguous features,
+                                             identifiers, categorical encodings and other ineligible measurements.
+                                           - Never replace a supplied token with prose, comments describing bars,
+                                             a table, a hand-written SVG, or a promise to plot later.
                                            - End with an h2 section titled Actions Before Analysis. Give concise numbered treatment 
                                              recommendations: exact column, reproducible record selection, operation, parameters and verification.
                                            - Recommend mean or median imputation only for appropriate numeric features with measured nulls,
@@ -237,6 +261,7 @@ def main() -> None:
                                        """
                                        + profile.model_copy(
                                                              update = {
+                                                                        "columns_profile": columns,
                                                                         "preview_columns": [],
                                                                         "preview_rows": [],
                                                                       }
@@ -244,13 +269,13 @@ def main() -> None:
                                                 .model_dump_json()
                                      ),
                        expected_output = ("""
-                                              A complete standalone HTML audit with embedded measured histograms only for eligible 
-                                              continuous numeric features with detected IQR outliers, highlighting outlier frequencies 
-                                              and showing IQR bounds, counts and percentages. Each chart is a complete static SVG with 
-                                              aligned axes and readable numeric ticks, and the report ends with Actions Before Analysis.
+                                              A complete standalone HTML audit with the exact supplied histogram_token
+                                              for each eligible continuous numeric measurement with detected IQR outliers.
+                                              Python replaces the tokens with measured static SVG histograms.
+                                              Do not write SVG yourself. End with Actions Before Analysis.
                                           """),
                        agent = agent,
-                       guardrail = validate_html_report,
+                       guardrail = validate_generated_report,
                        guardrail_max_retries = 2,
                      )
 
@@ -270,7 +295,7 @@ def main() -> None:
         result = crew.kickoff()
     except Exception as exc:
         parser.exit(2, f'Audit failed: {exc}\n')
-    report = result.raw
+    report = insert_histograms(result.raw, histogram_charts)
     valid, report = validate_html_report(
                                           TaskOutput(
                                                       description = "Rendered report",

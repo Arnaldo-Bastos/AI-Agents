@@ -770,7 +770,7 @@ class DatasetQualityProfilerTool(BaseTool):
 
                         if outlier_count:
                             # Aggregated chart data only; never expose raw rows.
-                            bin_count = min(60, max(10, int(np.ceil(np.sqrt(len(finite))))))
+                            bin_count = min(15, max(10, int(np.ceil(np.sqrt(len(finite))))))
                             counts, edges = np.histogram(finite.to_numpy(), bins = bin_count)
                             outlier_counts, _ = np.histogram(
                                                               finite[outlier_mask].to_numpy(),

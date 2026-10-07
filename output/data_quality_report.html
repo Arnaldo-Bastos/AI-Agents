@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Data Quality Report: online shoppers purchasing intention dataset.zip</title>
+<style>
+  body {font-family: Arial, sans-serif; margin: 20px; line-height: 1.5; color: #222;}
+  h1, h2, h3 {color: #003366;}
+  table {border-collapse: collapse; width: 100%; margin-bottom: 20px;}
+  th, td {border: 1px solid #aaa; padding: 8px; text-align: left;}
+  th {background-color: #eaeaea;}
+  .severity-info {color: #0b5394; font-weight: bold;}
+  .severity-medium {color: #b45f06; font-weight: bold;}
+  .flag-evidence {font-style: italic; font-size: 0.9em; margin-top: 2px;}
+  .section {margin-bottom: 2em;}
+</style>
+</head>
+<body>
+
+<h1>Data Quality Report</h1>
+<h2>Dataset: online shoppers purchasing intention dataset.zip</h2>
+
+<section class="section" id="executive-summary">
+<h2>Executive Summary</h2>
+<p>This dataset, containing 12,330 rows and 18 columns, exhibits generally high data completeness with no missing or blank cells detected. There are 125 duplicated rows accounting for approximately 1.01% of the dataset, which represents a medium severity data quality risk requiring user decision. Several numeric columns present values labeled as outliers based on the standard interquartile range (IQR) method; however, these outliers are informational flags, not errors, and need domain context to interpret. One categorical column (<code>VisitorType</code>) contains a rare category occurring in less than 1% of records, which may be acceptable depending on context. No null value imputations are recommended due to absence of missing data. Recommendations focus on handling duplicated rows and considering outlier impact as informed by business knowledge.</p>
+</section>
+
+<section class="section" id="dataset-overview">
+<h2>Dataset Overview</h2>
+<table>
+<thead>
+<tr><th>Characteristic</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr><td>Dataset Path</td><td>https://archive.ics.uci.edu/static/public/468/online+shoppers+purchasing+intention+dataset.zip</td></tr>
+<tr><td>Number of Rows</td><td>12,330</td></tr>
+<tr><td>Number of Columns</td><td>18</td></tr>
+<tr><td>Memory Usage</td><td>1.754 MB</td></tr>
+<tr><td>Duplicate Rows</td><td>125 (1.014%)</td></tr>
+<tr><td>Missing Values</td><td>0 (0.0%)</td></tr>
+</tbody>
+</table>
+
+<h3>Column Counts and Data Types</h3>
+<table>
+<thead>
+<tr>
+  <th>Column</th>
+  <th>Data Type</th>
+  <th>Non-Null Count</th>
+  <th>Unique Count</th>
+  <th>Null Count</th>
+  <th>Example Numeric Summary (min / median / max for numeric)</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>Administrative</td><td>int64</td><td>12,330</td><td>27</td><td>0</td><td>0 / 1 / 27</td></tr>
+<tr><td>Administrative_Duration</td><td>float64</td><td>12,330</td><td>3,335</td><td>0</td><td>0.0 / 7.5 / 3,398.75</td></tr>
+<tr><td>Informational</td><td>int64</td><td>12,330</td><td>17</td><td>0</td><td>0 / 0 / 24</td></tr>
+<tr><td>Informational_Duration</td><td>float64</td><td>12,330</td><td>1,258</td><td>0</td><td>0.0 / 0.0 / 2,549.375</td></tr>
+<tr><td>ProductRelated</td><td>int64</td><td>12,330</td><td>311</td><td>0</td><td>0 / 18 / 705</td></tr>
+<tr><td>ProductRelated_Duration</td><td>float64</td><td>12,330</td><td>9,551</td><td>0</td><td>0.0 / 598.94 / 63,973.52</td></tr>
+<tr><td>BounceRates</td><td>float64</td><td>12,330</td><td>1,872</td><td>0</td><td>0.0 / 0.00311 / 0.2</td></tr>
+<tr><td>ExitRates</td><td>float64</td><td>12,330</td><td>4,777</td><td>0</td><td>0.0 / 0.02516 / 0.2</td></tr>
+<tr><td>PageValues</td><td>float64</td><td>12,330</td><td>2,704</td><td>0</td><td>0.0 / 0.0 / 361.76</td></tr>
+<tr><td>SpecialDay</td><td>float64</td><td>12,330</td><td>6</td><td>0</td><td>0.0 / 0.0 / 1.0</td></tr>
+<tr><td>Month</td><td>string</td><td>12,330</td><td>10</td><td>0</td><td>n/a</td></tr>
+<tr><td>OperatingSystems</td><td>int64</td><td>12,330</td><td>8</td><td>0</td><td>1 / 2 / 8</td></tr>
+<tr><td>Browser</td><td>int64</td><td>12,330</td><td>13</td><td>0</td><td>1 / 2 / 13</td></tr>
+<tr><td>Region</td><td>int64</td><td>12,330</td><td>9</td><td>0</td><td>1 / 3 / 9</td></tr>
+<tr><td>TrafficType</td><td>int64</td><td>12,330</td><td>20</td><td>0</td><td>1 / 2 / 20</td></tr>
+<tr><td>VisitorType</td><td>string</td><td>12,330</td><td>3</td><td>0</td><td>n/a</td></tr>
+<tr><td>Weekend</td><td>bool</td><td>12,330</td><td>2</td><td>0</td><td>n/a</td></tr>
+<tr><td>Revenue</td><td>bool</td><td>12,330</td><td>2</td><td>0</td><td>n/a</td></tr>
+</tbody>
+</table>
+</section>
+
+<section class="section" id="prioritized-findings">
+<h2>Prioritized Findings</h2>
+<table>
+<thead>
+<tr><th>Flag Code</th><th>Severity</th><th>Column</th><th>Evidence</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td>DUPLICATE_ROWS</td>
+  <td class="severity-medium">Medium</td>
+  <td>Global</td>
+  <td>125 duplicated rows (1.014%).</td>
+</tr>
+<tr>
+  <td>IQR_OUTLIERS</td>
+  <td class="severity-info">Info</td>
+  <td>Administrative</td>
+  <td>404 values (3.277%) fall outside the 1.5 * IQR bounds.</td>
+</tr>
+<tr>
+  <td>IQR_OUTLIERS</td>
+  <td class="severity-info">Info</td>
+  <td>Administrative_Duration</td>
+  <td>1,172 values (9.505%) fall outside the 1.5 * IQR bounds.</td>
+</tr>
+<tr>
+  <td>IQR_OUTLIERS</td>
+  <td class="severity-info">Info</td>
+  <td>ProductRelated</td>
+  <td>987 values (8.005%) fall outside the 1.5 * IQR bounds.</td>
+</tr>
+<tr>
+  <td>IQR_OUTLIERS</td>
+  <td class="severity-info">Info</td>
+  <td>ProductRelated_Duration</td>
+  <td>961 values (7.794%) fall outside the 1.5 * IQR bounds.</td>
+</tr>
+<tr>
+  <td>IQR_OUTLIERS</td>
+  <td class="severity-info">Info</td>
+  <td>BounceRates</td>
+  <td>1,551 values (12.579%) fall outside the 1.5 * IQR bounds.</td>
+</tr>
+<tr>
+  <td>IQR_OUTLIERS</td>
+  <td class="severity-info">Info</td>
+  <td>ExitRates</td>
+  <td>1,099 values (8.913%) fall outside the 1.5 * IQR bounds.</td>
+</tr>
+<tr>
+  <td>IQR_OUTLIERS</td>
+  <td class="severity-info">Info</td>
+  <td>TrafficType</td>
+  <td>2,101 values (17.04%) fall outside the 1.5 * IQR bounds.</td>
+</tr>
+<tr>
+  <td>RARE_CATEGORIES</td>
+  <td class="severity-info">Info</td>
+  <td>VisitorType</td>
+  <td>1 category occurs in less than 1% of records.</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section class="section" id="recommendations">
+<h2>Recommendations</h2>
+<ol>
+<li>Review and decide on <strong>duplicate rows handling</strong>: 125 duplicated rows (1.014%) exist. Impact includes possible bias in modeling or analytics due to repeated records. Recommend identification by exact duplicate matching on all columns. Depending on business decision, either remove duplicates (row deletion) or retain if duplicates are valid repeats.</li>
+<li>Maintain care with columns flagged for outliers: <code>Administrative</code>, <code>Administrative_Duration</code>, <code>ProductRelated</code>, <code>ProductRelated_Duration</code>, <code>BounceRates</code>, <code>ExitRates</code>, and <code>TrafficType</code>. These outliers are informational and not errors. No automatic removal or imputation recommended without domain knowledge as these may represent true behaviors or events.</li>
+<li>No missing values detected; hence, no imputation is required or recommended.</li>
+<li>Investigate the rare category in <code>VisitorType</code> which occurs in less than 1% of records. Determine if it has business significance or if grouping with other categories is appropriate. This requires domain knowledge of visitor classification.</li>
+<li>Verify variable scales and units, especially where maximum values are large (e.g., <code>ProductRelated_Duration</code> max ~63,974) to ensure consistency with business context.</li>
+</ol>
+</section>
+
+<section class="section" id="positive-observations">
+<h2>Positive Observations</h2>
+<ul>
+<li>No missing or blank cells found, ensuring complete data for all 18 columns.</li>
+<li>All columns have consistent data types with no infinite or null values.</li>
+<li>Top-frequency categories are dominant in categorical columns, indicating clear prevalent values (e.g., 85.6% for one VisitorType category).</li>
+<li>Moderate levels of unique values allow for meaningful analysis without excessive sparsity.</li>
+<li>Data type consistency supports reliable statistical and machine learning analysis.</li>
+</ul>
+</section>
+
+<section class="section" id="methodology-limitations">
+<h2>Methodology and Limitations</h2>
+<p>This data quality assessment employed automated profiling techniques to quantify missingness, duplication, uniqueness, and outlier detection via interquartile range (IQR) analysis. Duplicate rows were identified by exact matching of all column values. Numeric summaries are based on 100% of available non-null data.</p>
+<p>Limitations include lack of domain knowledge in interpreting outliers and rare categories; these flags do not equate to errors but require business context. No validity rules or thresholds beyond IQR were applied. The report does not modify or cleanse data but provides evidence-based indicators.</p>
+<p>Imputation recommendations are strictly limited to numeric columns with measured nulls; here none exist, so no imputation is advised. Outliers and rare categories are reported but marked as informational only.</p>
+</section>
+
+<section class="section" id="actions-before-analysis">
+<h2>Actions Before Analysis</h2>
+<ol>
+<li><strong>Duplicate Row Removal</strong><br/>
+   - Column: All columns<br/>
+   - Record Selection: Identify records duplicated exactly across all 18 columns<br/>
+   - Operation: Remove duplicated rows to avoid bias from repetition<br/>
+   - Parameters: Apply pandas <code>drop_duplicates()</code> or equivalent<br/>
+   - Verification: Confirm resulting dataset has zero duplicated rows with <code>subset=None, keep='first'</code></li>
+
+<li><strong>Rare Category Review</strong><br/>
+   - Column: VisitorType<br/>
+   - Record Selection: Filter records with rare VisitorType category (frequency &lt; 1%)<br/>
+   - Operation: Consult domain experts to decide on category consolidation or separate treatment<br/>
+   - Parameters: Use frequency counts<br/>
+   - Verification: Document decision from business stakeholders</li>
+
+<li><strong>Outlier Contextualization</strong><br/>
+   - Columns: Administrative, Administrative_Duration, ProductRelated, ProductRelated_Duration, BounceRates, ExitRates, TrafficType<br/>
+   - Record Selection: Filter records where values fall outside 1.5 * IQR bounds (as per report statistics)<br/>
+   - Operation: Review with domain experts whether these outliers represent valid behavior or errors<br/>
+   - Parameters: Outliers defined by <code>value &lt; lower_bound</code> or <code>value &gt; upper_bound</code> per column<br/>
+   - Verification: Flag affected records and ensure understanding before any removal or transformation</li>
+
+<li><strong>Data Consistency Check</strong><br/>
+   - Columns: Especially ProductRelated_Duration and others with wide ranges<br/>
+   - Record Selection: Review max values and distribution for data entry anomalies<br/>
+   - Operation: Validate units and scaling with data owners<br/>
+   - Parameters: Summary statistics comparison<br/>
+   - Verification: Confirm reported ranges align with business logic</li>
+</ol>
+</section>
+
+</body>
+</html>

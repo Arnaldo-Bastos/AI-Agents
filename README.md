@@ -22,11 +22,8 @@ uv run python main.py "https://example.com/data/telco_churn_dataset.csv"
 The default output is `output/data_quality_report.html`. Change it with:
 
 ```powershell
-uv run python main.py "https://example.com/data/dataset.zip" --output output/my_report.html
+uv run python main.py "https://example.com/data/dataset.zip"
 ```
-
-Public Sciebo links of the form `https://host.sciebo.de/s/token` are automatically
-resolved to `/download`, including links with `?opendetails=`.
 
 The dataset argument must be an HTTP(S) URL. The profiler reads CSV, TSV, Excel,
 Parquet, JSON and JSONL/NDJSON files, and ZIP archives containing exactly one

@@ -13,19 +13,6 @@ Requires Python >=3.10,<3.14. From this directory:
 uv sync
 ```
 
-## Configure
-
-The `.env` file selects the model. The default is `ollama/llama3.2`.
-
-```env
-MODEL=ollama/llama3.2
-OLLAMA_BASE_URL=http://localhost:11434
-```
-
-Run Ollama and download the selected model before executing the agent.
-Other CrewAI-supported providers can be selected with `MODEL` and their
-required credentials.
-
 ## Run
 
 ```powershell

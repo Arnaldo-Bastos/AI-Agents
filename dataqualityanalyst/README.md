@@ -63,32 +63,14 @@ The output is a standalone HTML report with Executive Summary, Dataset Overview,
 Prioritized Findings, Recommendations, Positive Observations, Methodology and
 Limitations, ending with **Actions Before Analysis**. This final section contains
 practical recommendations with exact columns, record selection, operation,
-parameters and verification. Unknown domain decisions must be explicit.
+parameters and verification.
+
 The agent recommends treatments and does not modify the dataset.
 
-For every eligible continuous numeric feature with detected IQR outliers, the
+For every eligible continuous numeric feature with detected outliers, the
 prompts require a supplied histogram token in an **Outlier Histograms** section
-before the final actions. Charts use 10 to 15 measured bins, stack blue non-outlier
-and orange outlier frequencies, and show the IQR bounds, outlier count and
-percentage in a caption. The LLM infers likely
-feature meaning from the name and measured profile, and does not create IQR
-outlier charts for boolean/binary values, identifiers, codes, categorical
-encodings, ranks, dates/timestamps or geographic coordinates. For example,
-`lat`, `latitude`, `lon` and `longitude` are treated as likely geographic
-coordinates unless the profile establishes otherwise. The semantic check also
-excludes numeric-looking identifiers such as `cc_num`, card/account/customer or
-transaction identifiers, invoice/order numbers, CPF/SSN, phone and ZIP/postal
-codes. When a numeric field is ambiguous, it is excluded conservatively.
+before the final actions. When a numeric field is ambiguous, it is excluded conservatively.
 Outliers are statistical anomalies, not confirmed errors.
-
-Python replaces the selected tokens with static inline SVGs. The model selects
-semantically eligible candidates and writes the analysis; it does not generate
-chart geometry. Common coordinate, identifier and timestamp names are also
-excluded from the token candidates in code. Each chart
-includes aligned bars and axes in the same plot coordinate system, measured
-numeric ticks on both axes, labels and a centered top legend within its `viewBox`.
-Quartile and IQR bound lines are omitted. SVG coordinates must be evaluated
-numeric literals; arithmetic expressions are not rendered by the browser.
 
 The model receives measured column profiles, flags and histogram tokens,
 without raw row previews or histogram arrays. HTML generation is performed by the model; the guardrail
